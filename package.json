@@ -1,0 +1,26 @@
+{
+  "name": "imessage-exporter",
+  "version": "1.0.0",
+  "main": "app.mjs",
+  "type": "module",
+  "scripts": {
+    "start": "node app.mjs",
+    "dev": "concurrently \"nodemon app.mjs\" \"yarn watch-css\" \"yarn watch-overview\"",
+    "build-css": "sass scss:public/css",
+    "watch-css": "sass --watch scss:public/css",
+    "generate-overview": "./generate-overview.sh > project-overview.txt",
+    "watch-overview": "nodemon --watch . --ext js,mjs,scss,hbs,json,config.js --ignore data/ --ignore public/ --exec \"npm run generate-overview\""
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "express-handlebars": "^7.0.7",
+    "sass-middleware": "^0.14.0",
+    "sequelize": "^6.32.1",
+    "sqlite3": "^5.1.7"
+  },
+  "devDependencies": {
+    "concurrently": "^9.0.1",
+    "nodemon": "^3.1.7",
+    "sass": "^1.79.4"
+  }
+}

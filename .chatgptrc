@@ -1,0 +1,25 @@
+# .chatgptrc
+
+## Project Philosophy and Guidelines
+
+- **Clarity and Readability**: Code should be easy to read and understand by humans and AI alike. Use meaningful variable names, consistent naming conventions, and add comments where necessary.
+
+- **Modularity**: Break down the application into small, manageable modules. Each module should have a single responsibility.
+
+- **Consistency**: Follow established conventions throughout the project. This includes naming conventions, coding style, and project structure.
+
+- **Documentation**: Provide comprehensive documentation, both inline and in the project overview, to ensure that any contributor or AI assistant can understand and work on the project effectively.
+
+- **Embrace AI Collaboration**: Recognize that AI assistants like ChatGPT can be valuable collaborators. Provide sufficient context and information to enable them to contribute meaningfully.
+
+- **Security and Privacy**: Be mindful of sensitive data, and ensure that personal information is handled responsibly and securely.
+
+- **Open-mindedness**: Be open to new ideas and approaches. Encourage experimentation and learning.
+
+## Context for AI Assistants
+
+- This project aims to create a tool that allows users to view and export iMessage conversations from their local databases.
+
+- The code should be self-explanatory, with clear comments and documentation to assist AI in understanding the project's intent and functionality.
+
+- AI assistants are encouraged to maintain the project's philosophy in their contributions, focusing on clarity, modularity, and collaboration.

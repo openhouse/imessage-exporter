@@ -1,0 +1,108 @@
+// scss/styles.scss
+
+/**
+ * SCSS styles for the iMessage Exporter application.
+ * Defines the styling for the conversation view, messages, and overall layout.
+ */
+
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 20px;
+  background-color: #e5ddd5;
+}
+
+h1 {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+/* Additional styles for conversation and messages */
+
+.conversation {
+  max-width: 800px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.message {
+  max-width: 60%;
+  margin-bottom: 20px;
+  padding: 10px;
+  border-radius: 15px;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  word-wrap: break-word;
+}
+
+.from-me {
+  align-self: flex-end;
+  background-color: #dcf8c6;
+  margin-right: 10px;
+}
+
+.from-them {
+  align-self: flex-start;
+  background-color: #fff;
+  margin-left: 10px;
+}
+
+.message::after {
+  content: "";
+  position: absolute;
+  top: 10px;
+  width: 0;
+  height: 0;
+}
+
+.from-me::after {
+  right: -10px;
+  border-width: 10px 0 10px 10px;
+  border-style: solid;
+  border-color: transparent transparent transparent #dcf8c6;
+}
+
+.from-them::after {
+  left: -10px;
+  border-width: 10px 10px 10px 0;
+  border-style: solid;
+  border-color: transparent #fff transparent transparent;
+}
+
+.message-content {
+  word-wrap: break-word;
+}
+
+.message-meta {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.75em;
+  color: #555;
+  margin-top: 5px;
+}
+
+.message-sender {
+  font-weight: bold;
+}
+
+.message-date {
+  font-style: italic;
+}
+
+.message-text {
+  margin-top: 5px;
+}
+
+.message-attachment {
+  margin-top: 10px;
+}
+
+.message-attachment img,
+.message-attachment video {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin-top: 5px;
+}

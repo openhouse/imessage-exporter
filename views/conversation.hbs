@@ -1,0 +1,38 @@
+{{!-- views/conversation.hbs --}}
+
+<!--
+  Conversation view template.
+  Displays messages within a conversation in a chat-like format.
+  Supports text messages, images, videos, and other attachments.
+-->
+
+<h1>{{title}}</h1>
+<div class="conversation">
+  {{#each messages}}
+    <div class="message {{#if isFromMe}}from-me{{else}}from-them{{/if}}">
+      <div class="message-content">
+        {{#if text}}
+          <div class="message-text">{{text}}</div>
+        {{/if}}
+        {{#if attachmentUrl}}
+          <div class="message-attachment">
+            {{#if (contains mimeType 'image')}}
+              <img src="{{attachmentUrl}}" alt="Image">
+            {{else if (contains mimeType 'video')}}
+              <video controls>
+                <source src="{{attachmentUrl}}" type="{{mimeType}}">
+                Your browser does not support the video tag.
+              </video>
+            {{else}}
+              <a href="{{attachmentUrl}}">Download Attachment</a>
+            {{/if}}
+          </div>
+        {{/if}}
+      </div>
+      <div class="message-meta">
+        <span class="message-sender">{{senderName}}</span>
+        <span class="message-date">{{date}}</span>
+      </div>
+    </div>
+  {{/each}}
+</div>

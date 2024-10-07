@@ -1,0 +1,22 @@
+{{! views/index.hbs }}
+
+<!--
+  Index view template.
+  Displays a list of all conversations with links to each conversation.
+-->
+
+<h1>{{title}}</h1>
+
+{{#if chats.length}}
+  <ul>
+    {{#each chats}}
+      <li>
+        <a href="/conversation/{{encodeURIComponent chat_identifier}}">
+          {{#if display_name}}{{display_name}}{{else}}{{chat_identifier}}{{/if}}
+        </a>
+      </li>
+    {{/each}}
+  </ul>
+{{else}}
+  <p>No conversations found.</p>
+{{/if}}

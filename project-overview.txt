@@ -1,0 +1,579 @@
+.
+├── app.mjs
+├── config
+│   ├── database-config.mjs
+│   └── identifier-to-name-config.mjs
+├── generate-overview.sh
+├── models
+│   └── index-model.mjs
+├── package.json
+├── project-overview.txt
+├── readme.txt
+├── routes
+│   ├── conversation-route.mjs
+│   └── index-route.mjs
+├── scss
+│   └── styles.scss
+├── views
+│   ├── conversation.hbs
+│   ├── index.hbs
+│   └── layouts
+│       └── main.hbs
+└── yarn.lock
+
+7 directories, 15 files
+
+
+Contents of JavaScript, MJS, SCSS, Handlebars, JSON, and Config files:
+
+##### ./config/database-config.mjs #####
+// config/database-config.mjs
+
+/**
+ * Configures the connection to the local 'chat.db' SQLite database using Sequelize ORM.
+ * This module exports a Sequelize instance connected to the 'chat.db' file.
+ */
+
+import { Sequelize } from "sequelize";
+import path from "path";
+import { fileURLToPath } from "url";
+
+// Get the directory name of the current module
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+// Path to the local chat.db file
+const databasePath = path.resolve(__dirname, "../data/chat.db");
+
+// Initialize Sequelize with SQLite dialect
+const sequelize = new Sequelize({
+  dialect: "sqlite",
+  storage: databasePath,
+  logging: false, // Disable logging; change to console.log for debugging
+});
+
+export default sequelize;
+
+##### ./config/identifier-to-name-config.mjs #####
+// config/identifier-to-name-config.mjs
+
+/**
+ * Provides a mapping of sender identifiers (phone numbers or email addresses)
+ * to friendly names for display in conversations.
+ * Update this file with your own contacts to improve readability.
+ */
+
+export const identifierToName = {
+  // Replace these with your actual mappings
+  "+1234567890": "Alice",
+  "+0987654321": "Bob",
+  "john@example.com": "John",
+  // Add other mappings as needed
+};
+
+##### ./scss/styles.scss #####
+// scss/styles.scss
+
+/**
+ * SCSS styles for the iMessage Exporter application.
+ * Defines the styling for the conversation view, messages, and overall layout.
+ */
+
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 20px;
+  background-color: #e5ddd5;
+}
+
+h1 {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+/* Additional styles for conversation and messages */
+
+.conversation {
+  max-width: 800px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.message {
+  max-width: 60%;
+  margin-bottom: 20px;
+  padding: 10px;
+  border-radius: 15px;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  word-wrap: break-word;
+}
+
+.from-me {
+  align-self: flex-end;
+  background-color: #dcf8c6;
+  margin-right: 10px;
+}
+
+.from-them {
+  align-self: flex-start;
+  background-color: #fff;
+  margin-left: 10px;
+}
+
+.message::after {
+  content: "";
+  position: absolute;
+  top: 10px;
+  width: 0;
+  height: 0;
+}
+
+.from-me::after {
+  right: -10px;
+  border-width: 10px 0 10px 10px;
+  border-style: solid;
+  border-color: transparent transparent transparent #dcf8c6;
+}
+
+.from-them::after {
+  left: -10px;
+  border-width: 10px 10px 10px 0;
+  border-style: solid;
+  border-color: transparent #fff transparent transparent;
+}
+
+.message-content {
+  word-wrap: break-word;
+}
+
+.message-meta {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.75em;
+  color: #555;
+  margin-top: 5px;
+}
+
+.message-sender {
+  font-weight: bold;
+}
+
+.message-date {
+  font-style: italic;
+}
+
+.message-text {
+  margin-top: 5px;
+}
+
+.message-attachment {
+  margin-top: 10px;
+}
+
+.message-attachment img,
+.message-attachment video {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin-top: 5px;
+}
+
+##### ./models/index-model.mjs #####
+// models/index-model.mjs
+
+/**
+ * Placeholder for future Sequelize models.
+ * Currently not used, but set up for potential expansion.
+ *
+ * This file can be used to define and export database models if needed.
+ */
+
+// Example:
+// import { DataTypes } from 'sequelize';
+// import sequelize from '../config/database-config.mjs';
+
+// const Message = sequelize.define('Message', {
+//   // Define model attributes
+// });
+
+// export { Message };
+
+##### ./package.json #####
+{
+  "name": "imessage-exporter",
+  "version": "1.0.0",
+  "main": "app.mjs",
+  "type": "module",
+  "scripts": {
+    "start": "node app.mjs",
+    "dev": "concurrently \"nodemon app.mjs\" \"yarn watch-css\" \"yarn watch-overview\"",
+    "build-css": "sass scss:public/css",
+    "watch-css": "sass --watch scss:public/css",
+    "generate-overview": "./generate-overview.sh > project-overview.txt",
+    "watch-overview": "nodemon --watch . --ext js,mjs,scss,hbs,json,config.js --ignore data/ --ignore public/ --exec \"npm run generate-overview\""
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "express-handlebars": "^7.0.7",
+    "sass-middleware": "^0.14.0",
+    "sequelize": "^6.32.1",
+    "sqlite3": "^5.1.7"
+  },
+  "devDependencies": {
+    "concurrently": "^9.0.1",
+    "nodemon": "^3.1.7",
+    "sass": "^1.79.4"
+  }
+}
+
+##### ./app.mjs #####
+// app.mjs
+
+/**
+ * Entry point for the iMessage Exporter application.
+ * Sets up the Express server, view engine, middleware, and routes.
+ * This file initializes the application and starts the server.
+ */
+
+import express from "express";
+import { engine } from "express-handlebars";
+import path from "path";
+import sassMiddleware from "sass-middleware";
+import indexRouter from "./routes/index-route.mjs";
+import conversationRouter from "./routes/conversation-route.mjs";
+import { fileURLToPath } from "url";
+
+// Get the directory name of the current module
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+// Register helper functions for Handlebars
+const hbs = engine({
+  extname: ".hbs",
+  helpers: {
+    /**
+     * Helper to check if a string contains a substring.
+     * @param {string} str - The string to search.
+     * @param {string} substring - The substring to look for.
+     * @returns {boolean} - True if substring is found in str.
+     */
+    contains: function (str, substring) {
+      return str && str.includes(substring);
+    },
+    /**
+     * Helper to encode a URI component.
+     * @param {string} component - The component to encode.
+     * @returns {string} - The encoded component.
+     */
+    encodeURIComponent: function (component) {
+      return encodeURIComponent(component);
+    },
+    /**
+     * Helper to decode a URI component.
+     * @param {string} component - The component to decode.
+     * @returns {string} - The decoded component.
+     */
+    decodeURIComponent: function (component) {
+      return decodeURIComponent(component);
+    },
+  },
+});
+
+const app = express();
+
+// Set up Handlebars view engine
+app.engine("hbs", hbs);
+app.set("view engine", "hbs");
+app.set("views", path.join(__dirname, "views"));
+
+// Set up SCSS middleware to compile SCSS files on-the-fly
+app.use(
+  sassMiddleware({
+    src: path.join(__dirname, "scss"),
+    dest: path.join(__dirname, "public/css"),
+    indentedSyntax: false, // true = .sass and false = .scss
+    debug: true,
+    outputStyle: "compressed",
+    prefix: "/css",
+  })
+);
+
+// Serve static files from the 'public' directory
+app.use(express.static(path.join(__dirname, "public")));
+
+// Use routes
+app.use("/", indexRouter);
+app.use("/conversation", conversationRouter);
+
+// Start the server
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+  console.log(`Server is running on http://localhost:${PORT}`);
+});
+
+##### ./views/conversation.hbs #####
+{{!-- views/conversation.hbs --}}
+
+<!--
+  Conversation view template.
+  Displays messages within a conversation in a chat-like format.
+  Supports text messages, images, videos, and other attachments.
+-->
+
+<h1>{{title}}</h1>
+<div class="conversation">
+  {{#each messages}}
+    <div class="message {{#if isFromMe}}from-me{{else}}from-them{{/if}}">
+      <div class="message-content">
+        {{#if text}}
+          <div class="message-text">{{text}}</div>
+        {{/if}}
+        {{#if attachmentUrl}}
+          <div class="message-attachment">
+            {{#if (contains mimeType 'image')}}
+              <img src="{{attachmentUrl}}" alt="Image">
+            {{else if (contains mimeType 'video')}}
+              <video controls>
+                <source src="{{attachmentUrl}}" type="{{mimeType}}">
+                Your browser does not support the video tag.
+              </video>
+            {{else}}
+              <a href="{{attachmentUrl}}">Download Attachment</a>
+            {{/if}}
+          </div>
+        {{/if}}
+      </div>
+      <div class="message-meta">
+        <span class="message-sender">{{senderName}}</span>
+        <span class="message-date">{{date}}</span>
+      </div>
+    </div>
+  {{/each}}
+</div>
+
+##### ./views/index.hbs #####
+{{! views/index.hbs }}
+
+<!--
+  Index view template.
+  Displays a list of all conversations with links to each conversation.
+-->
+
+<h1>{{title}}</h1>
+
+{{#if chats.length}}
+  <ul>
+    {{#each chats}}
+      <li>
+        <a href="/conversation/{{encodeURIComponent chat_identifier}}">
+          {{#if display_name}}{{display_name}}{{else}}{{chat_identifier}}{{/if}}
+        </a>
+      </li>
+    {{/each}}
+  </ul>
+{{else}}
+  <p>No conversations found.</p>
+{{/if}}
+##### ./views/layouts/main.hbs #####
+{{! views/layouts/main.hbs }}
+
+<!--
+  Main layout template.
+  Provides the base HTML structure for all pages.
+  Includes the CSS stylesheet and renders the page content.
+-->
+
+
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>{{title}}</title>
+    <link rel="stylesheet" href="/css/styles.css" />
+  </head>
+  <body>
+    {{{body}}}
+  </body>
+</html>
+##### ./routes/index-route.mjs #####
+// routes/index-route.mjs
+
+/**
+ * Defines the route for the index page, displaying a list of all conversations.
+ * Fetches conversation identifiers and display names from the database.
+ */
+
+import express from "express";
+import sequelize from "../config/database-config.mjs";
+
+const router = express.Router();
+
+router.get("/", async (req, res) => {
+  try {
+    const [results] = await sequelize.query(`
+      SELECT
+        chat_identifier,
+        display_name
+      FROM
+        chat
+      ORDER BY
+        display_name ASC
+    `);
+
+    res.render("index", { chats: results, title: "Conversations" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Internal Server Error");
+  }
+});
+
+export default router;
+
+##### ./routes/conversation-route.mjs #####
+// routes/conversation-route.mjs
+
+/**
+ * Defines the route for displaying messages within a specific conversation.
+ * Handles fetching messages, attachments, and sender information from the database.
+ * Processes messages for rendering and serves attachments.
+ */
+
+import express from "express";
+import path from "path";
+import fs from "fs";
+import sequelize from "../config/database-config.mjs";
+import { fileURLToPath } from "url";
+import { identifierToName } from "../config/identifier-to-name-config.mjs"; // Import the identifier-to-name mapping
+
+const router = express.Router();
+
+// Get the directory name of the current module
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+// Helper function to resolve attachment paths
+const getAttachmentPath = (relativePath) => {
+  const attachmentsDir = path.resolve(__dirname, "../data/Attachments");
+  const decodedPath = relativePath
+    .split("/")
+    .map(decodeURIComponent)
+    .join(path.sep);
+  return path.join(attachmentsDir, decodedPath);
+};
+
+router.get("/:chatId", async (req, res) => {
+  const chatId = req.params.chatId;
+  try {
+    const [messages] = await sequelize.query(
+      `
+      SELECT
+        message.ROWID,
+        message.text,
+        message.is_from_me,
+        datetime(message.date / 1000000000 + strftime('%s', '2001-01-01'), 'unixepoch', 'localtime') AS date,
+        attachment.filename,
+        attachment.mime_type,
+        handle.id AS sender_identifier
+      FROM
+        message
+      LEFT JOIN
+        message_attachment_join ON message.ROWID = message_attachment_join.message_id
+      LEFT JOIN
+        attachment ON attachment.ROWID = message_attachment_join.attachment_id
+      LEFT JOIN
+        handle ON message.handle_id = handle.ROWID
+      JOIN
+        chat_message_join ON message.ROWID = chat_message_join.message_id
+      WHERE
+        chat_message_join.chat_id = (
+          SELECT
+            ROWID
+          FROM
+            chat
+          WHERE
+            chat_identifier = ?
+        )
+      ORDER BY
+        message.date ASC
+      `,
+      { replacements: [chatId] }
+    );
+
+    // Process messages to prepare for rendering
+    const processedMessages = messages.map((msg) => {
+      let attachmentUrl = null;
+      if (msg.filename) {
+        // Original path of the attachment
+        const originalAttachmentPath = msg.filename;
+
+        // Remove 'file://' prefix if present
+        const filePath = originalAttachmentPath.replace("file://", "");
+
+        // Get the relative path after 'Attachments/' directory
+        const pathParts = filePath.split("Attachments/");
+        const attachmentRelativePath = pathParts[1];
+
+        if (attachmentRelativePath) {
+          // Build the new path in our project's data/Attachments directory
+          const encodedRelativePath = attachmentRelativePath
+            .split(path.sep)
+            .map(encodeURIComponent)
+            .join("/");
+
+          attachmentUrl = `/conversation/attachments/${encodedRelativePath}`;
+        } else {
+          console.warn(
+            `Could not parse attachment path: ${originalAttachmentPath}`
+          );
+        }
+      }
+
+      // Determine sender name
+      let senderName;
+      if (msg.is_from_me === 1) {
+        senderName = "You"; // Or your own name
+      } else {
+        senderName =
+          identifierToName[msg.sender_identifier] ||
+          msg.sender_identifier ||
+          "Unknown";
+      }
+
+      return {
+        text: msg.text,
+        isFromMe: msg.is_from_me === 1,
+        date: msg.date,
+        attachmentUrl,
+        mimeType: msg.mime_type,
+        senderName,
+      };
+    });
+
+    res.render("conversation", {
+      chatId,
+      messages: processedMessages,
+      title: `Conversation with ${chatId}`,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Internal Server Error");
+  }
+});
+
+// Serve attachments
+router.get("/attachments/*", (req, res) => {
+  const relativePath = req.params[0]; // Capture the wildcard path
+  const attachmentPath = getAttachmentPath(relativePath);
+
+  res.sendFile(attachmentPath, (err) => {
+    if (err) {
+      console.error("Error sending attachment:", err);
+      res.status(404).send("Attachment not found");
+    }
+  });
+});
+
+export default router;
+

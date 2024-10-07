@@ -1,0 +1,31 @@
+# Node.js dependencies
+node_modules/
+
+# Data directory containing sensitive information
+data/
+
+# Compiled CSS (optional)
+public/css/
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+*.log
+
+# OS-specific files
+.DS_Store
+
+# Environment variables
+.env
+
+# Optional: SASS cache files
+.sass-cache/
+
+# Optional: Editor or IDE files
+.vscode/
+.idea/
+*.swp
+
+# Optional: MacOS resource forks
+._*
