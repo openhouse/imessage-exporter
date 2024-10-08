@@ -6,6 +6,7 @@ This project is a Node.js application that allows users to view and export their
 
 ## Project Structure
 
+```
 .
 ├── app.mjs
 ├── config
@@ -31,6 +32,7 @@ This project is a Node.js application that allows users to view and export their
 └── yarn.lock
 
 7 directories, 16 files
+```
 
 ---
 

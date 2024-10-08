@@ -18,8 +18,10 @@ This project is a Node.js application that allows users to view and export their
 # Output the heading to project-overview.md
 echo "$heading" > project-overview.md
 
-# Generate directory tree, excluding certain directories, and append to project-overview.md
+# Generate directory tree, excluding certain directories, and append to project-overview.md in a code block
+echo "\`\`\`" >> project-overview.md
 tree -I "node_modules|.git|data|public" >> project-overview.md
+echo "\`\`\`" >> project-overview.md
 
 # Append a separator
 echo -e "\n---\n" >> project-overview.md
